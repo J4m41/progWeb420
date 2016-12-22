@@ -5,6 +5,12 @@
  */
 package servlets;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
+import com.nimbusds.jose.KeyLengthException;
+import com.nimbusds.jose.crypto.MACSigner;
 import db_classes.DBManager;
 import db_classes.User;
 import java.io.IOException;
@@ -13,15 +19,19 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import com.nimbusds.jwt.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.net.URLEncoder;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 /**
  *
  * @author gianma
@@ -80,15 +90,49 @@ public class PwRecoveryServlet extends HttpServlet {
             });
 
             Message msg = new MimeMessage(session);
-
+            
+            byte[] bytes = new byte[32];
+            String message = "secret";
+            JWSSigner signer = null;
             try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                bytes = md.digest(message.getBytes("UTF-8"));
+                
+                signer = new MACSigner(bytes);
+            } catch (NoSuchAlgorithmException | KeyLengthException ex) {
+                Logger.getLogger(PwRecoveryServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+            JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256).build();
+            
+            long tokenExpiration = 216000;
+            Date currentTime = new Date();
+            currentTime.setTime(currentTime.getTime() + 216000 * tokenExpiration);
+            JWTClaimsSet claims = new JWTClaimsSet.Builder().subject(user.getUsername()).expirationTime(currentTime).build();
+            
+            SignedJWT signedJWT = new SignedJWT(header, claims);
+            
+            try {
+                signedJWT.sign(signer);
+            } catch (JOSEException ex) {
+                Logger.getLogger(PwRecoveryServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            String sJWT = signedJWT.serialize();
+            String url = "http://localhost:8080/Eat_v2.1/pwchange_page.jsp?token="+ URLEncoder.encode(sJWT);
+            System.out.println("url: "+url);
+            
+                
+                try {
                 msg.setFrom(new InternetAddress(serverpw));
                 msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver_mail,false));
                 msg.setSubject("EatItHere Password Recovery");
-                msg.setText("Gentile"+user.getFirstname()+user.getLastname()
-                    +",\nAbbiamo ricevuto una richiesta per resettare la tua password. Se non sei stato tu "
-                        + "a richiedere questo servizio puoi ignorare questa email. Altrimenti puoi impostare "
-                        + "la tua nuova password cliccando su questo link:\n");
+                msg.setText("Gentile "+user.getFirstname()+" "+user.getLastname()
+                +",\nAbbiamo ricevuto una richiesta per resettare la tua password. Se non sei stato tu "
+                + "a richiedere questo servizio puoi ignorare questa email. Altrimenti puoi impostare "
+                + "la tua nuova password cliccando su questo link:\n"
+                + url);
                 
                 msg.setSentDate(new java.util.Date());
 
@@ -96,15 +140,17 @@ public class PwRecoveryServlet extends HttpServlet {
                 transport.connect("smtp.gmail.com", 465, servername, serverpw);
                 transport.sendMessage(msg, msg.getAllRecipients());
                 transport.close();
-
-            } catch (AddressException ex) {
+                
+                } catch (AddressException ex) {
                 Logger.getLogger(PwRecoveryServlet.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (MessagingException ex) {
+                } catch (MessagingException ex) {
                 Logger.getLogger(PwRecoveryServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-            response.sendRedirect(request.getContextPath()+"/login_page.jsp");
+                }
+                
+                response.sendRedirect(request.getContextPath()+"/index.jsp");
+                
+            
         }
     }
-
+    
 }

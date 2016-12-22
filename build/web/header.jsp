@@ -14,8 +14,6 @@
         
     </head>
     <body>
-        <script src="media/js/jquery-3.1.1.min.js"></script>
-        <script src="media/js/scripts.js"></script>
         <nav id="nav-lato">
             <c:if test="${sessionScope.user == null}">
                 <ul class="menu">
@@ -74,5 +72,8 @@
             <div class="col-md-2"></div>
             
         </nav>
+        
+        <script src="media/js/jquery-3.1.1.min.js"></script>
+        <script src="media/js/scripts.js"></script>
                 
         

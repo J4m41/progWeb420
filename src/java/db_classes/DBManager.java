@@ -5,8 +5,6 @@
  */
 package db_classes;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,14 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import info.debatty.java.stringsimilarity.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -142,17 +133,20 @@ public class DBManager implements Serializable {
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, username);
         
-        ResultSet rs = ps.executeQuery();
+        
         
         try {
+            ResultSet rs = ps.executeQuery();
             if (rs.next()){
                 User user = new User();
                 user.setFirstname(rs.getString("firstname"));
                 user.setLastname(rs.getString("lastname"));
+                user.setUsername(username);
                 return user;
             }
-        }finally{
             rs.close();
+        }finally{
+            
             ps.close();
         }
         
@@ -298,9 +292,10 @@ public class DBManager implements Serializable {
         String query = "SELECT * FROM restaurants WHERE name = ?";
         PreparedStatement ps = con.prepareStatement(query);
         ps.setString(1, search);
-        ResultSet rs = ps.executeQuery();
+        
                 
         try{
+            ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 
                 tmp.setId(rs.getInt("id"));
@@ -331,8 +326,9 @@ public class DBManager implements Serializable {
                 pst.close();  
                 
             }
-        }finally{
             rs.close();
+        }finally{
+            
             ps.close();
         }
         

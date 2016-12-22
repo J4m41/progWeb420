@@ -12,7 +12,6 @@
         <param-name>dbuser</param-name>
         <param-value>postgres</param-value>
     </context-param>
-    
     <listener>
         <listener-class>listeners.EatItHereAppListener</listener-class>
     </listener>
@@ -44,11 +43,17 @@
         <servlet-name>AddRestaurant</servlet-name>
         <servlet-class>servlets.AddRestaurant</servlet-class>
         <init-param>
-        <param-name>uploadDir</param-name>
-        <param-value>/home/gianma/NetBeansProjects/TestGit/progWeb420/web/media/images</param-value>
+            <param-name>uploadDir</param-name>
+            <param-value>/home/gianma/NetBeansProjects/TestGit/progWeb420/web/media/images</param-value>
         </init-param>
+    </servlet>
+    <servlet>
         <servlet-name>AddComment</servlet-name>
         <servlet-class>servlets.AddComment</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PwChangeServlet</servlet-name>
+        <servlet-class>servlets.PwChangeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -77,8 +82,14 @@
     <servlet-mapping>
         <servlet-name>AddRestaurant</servlet-name>
         <url-pattern>/AddRestaurant</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AddComment</servlet-name>
         <url-pattern>/AddComment</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PwChangeServlet</servlet-name>
+        <url-pattern>/PwChangeServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
