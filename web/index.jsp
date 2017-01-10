@@ -4,7 +4,6 @@
     Author     : leonardo
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -39,7 +38,7 @@
                 <ul class="menu">
                     <li>Welcome back <c:out value="${sessionScope.user.firstname}"></c:out></li>
                     <li><a href="index.jsp">Home</a></li>
-                    <li><a href="#">My profile</a></li>
+                    <li><a href="profile_page.jsp">My profile</a></li>
                     <li><a href="#">My notifications</a></li>
                     <li><a href="#">My restaurants</a></li>
                     <li><a href="addRestaurant_page.jsp">Add restaurant</a></li>
@@ -83,10 +82,9 @@
             
         </nav>
         <img id="bg_image" src="media/images/home_restaurant.jpg">
-        <div clas="jumbotron" >
-            <h1>The best way to eat</h1>
-        </div>
-        
+            <div class="jumbotron" >
+                <h1>The best way to eat</h1>
+            </div>
         
   
         <script src="media/js/jquery-3.1.1.min.js"></script>

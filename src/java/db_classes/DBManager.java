@@ -142,6 +142,8 @@ public class DBManager implements Serializable {
                 user.setFirstname(rs.getString("firstname"));
                 user.setLastname(rs.getString("lastname"));
                 user.setUsername(username);
+                user.setId(rs.getInt("id"));
+                user.setUsertype(rs.getString("user_type"));
                 return user;
             }
             rs.close();
@@ -354,7 +356,7 @@ public class DBManager implements Serializable {
     /**
      *
      * @param restaurant that needs to be added to DB
-     * @param creator
+     * @param creator_id
      * @param isOwner
      * @return
      */
@@ -570,6 +572,32 @@ public class DBManager implements Serializable {
         
         return true;
     }
+    
+    /**
+     *
+     * @param username
+     * @param password the new password
+     * @return true/false depending on success/fail
+     */
+    public boolean changePWQuery(String username, String password){
+        int update = 0;
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
+            
+            ps.setString(1, password);
+            ps.setString(2, username);
+            
+            update = ps.executeUpdate();
+            
+            ps.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return (update != 0);
+    }
+    
+    
     
     /**
      *

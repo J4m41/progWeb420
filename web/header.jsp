@@ -29,7 +29,7 @@
                 <ul class="menu">
                     <li>Welcome back <c:out value="${sessionScope.user.firstname}"></c:out></li>
                     <li><a href="index.jsp">Home</a></li>
-                    <li><a href="#">My profile</a></li>
+                    <li><a href="profile_page.jsp">My profile</a></li>
                     <li><a href="#">My notifications</a></li>
                     <li><a href="#">My restaurants</a></li>
                     <li><a href="#">Services</a></li>

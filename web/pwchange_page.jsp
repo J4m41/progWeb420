@@ -29,8 +29,7 @@
         <script src="media/js/autoCompelte.js"></script>
         
     </head>
-    <%!String token;%>
-    <% token = request.getParameter("token"); %>
+    
     <%!
     public String parseJWT(String jwt) throws NoSuchAlgorithmException, ParseException, JOSEException, UnsupportedEncodingException{
         String username = null;
@@ -55,6 +54,7 @@
         return username;
     } 
     %>
+    <% String token = request.getParameter("token"); %>
     
     <body>
         <script src="media/js/jquery-3.1.1.min.js"></script>
@@ -74,7 +74,7 @@
                 <ul class="menu">
                     <li>Welcome back <c:out value="${sessionScope.user.firstname}"></c:out></li>
                     <li><a href="index.jsp">Home</a></li>
-                    <li><a href="#">My profile</a></li>
+                    <li><a href="profile_page.jsp">My profile</a></li>
                     <li><a href="#">My notifications</a></li>
                     <li><a href="#">My restaurants</a></li>
                     <li><a href="#">Services</a></li>
@@ -130,23 +130,30 @@
                         <div class="panel-body">
                             <form action="PwChangeServlet" method="POST">
                                 <div class="container-fluid">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="username">Username:</label>
-                                            <input type="text" id="username" name="username" class="form-control" disabled="true" value="<%=parseJWT(token)%>">
-                                        </div>
-                                    </div>
+                                    
+                                            <c:if test="${sessionScope.user == null}">
+                                                <input type="hidden" id="username" name="username" class="form-control" value="<%=parseJWT(token)%>">
+                                            </c:if>
+                                            <c:if test="${sessionScope.user != null}">
+                                                <input type="hidden" id="username" name="username" class="form-control" value="<c:out value="${sessionScope.user.username}"></c:out>">
+                                            </c:if>    
+                                    
                                     <div class="form-group">
                                         <div class="row">
                                             <label for="password1">Nuova password:</label>
-                                            <input type="password" id="password1" name="password1" class="form-control">
+                                            <input type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                                               title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                               id="password1" name="password1" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="row">
                                             <label for="password2">Conferma password:</label>
-                                            <input type="password" id="password2" name="password2" class="form-control">
+                                            <input type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                                               title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                               id="password2" name="password2" class="form-control">
                                         </div>
+                                        <c:out value="${requestScope.message}"></c:out>
                                     </div>
                                     <br>
                                     <div class="form-group">

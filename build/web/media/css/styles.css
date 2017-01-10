@@ -34,7 +34,8 @@
 
 #bg_image{
     top:0px;
-    height:100;
+    height:auto;
+    width: auto;
     position: absolute;
 }
 
@@ -89,9 +90,9 @@ body{
     
     
 }
-#jumbo-res{
-    top:0px
-}
+//#jumbo-res{
+//    top:0px
+//}
 
 
 //questo codice serve per far andare le stelline
