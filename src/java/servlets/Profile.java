@@ -52,7 +52,10 @@ public class Profile extends HttpServlet {
         String restName = new String();
         restName = tmp.replaceAll("_", " ");
                 
-        out.println("<html><head><title>"+restName+"</title>");
+        out.println("<html><head><title>"+restName+"</title>"
+                + "<link rel=\"stylesheet\" href=\"media/css/styles.css\">");
+        out.println("<script src=\"media/js/jquery-3.1.1.min.js\"></script>\n" +
+"        <script src=\"media/js/scripts.js\"></script>");
         request.getRequestDispatcher("header.jsp").include(request, response);
         
         Restaurant res_tmp = new Restaurant();
@@ -119,10 +122,9 @@ public class Profile extends HttpServlet {
         
         }
         
-        out.println("</div><script src=\"media/js/jquery-3.1.1.min.js\"></script>\n" +
-"        <script src=\"media/js/scripts.js\"></script>");
         
-        out.println("</body></html>");
+        
+        out.println("</div></body></html>");
         
     }
 
